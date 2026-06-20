@@ -1,9 +1,11 @@
 package pro.skyjava.course2.examinerservice.service;
 
+import org.springframework.stereotype.Service;
 import pro.skyjava.course2.examinerservice.domain.Question;
 
 import java.util.*;
 
+@Service
 public class JavaQuestionService implements QuestionService {
     private final Set<Question> questions = new HashSet<>();
     private final Random random = new Random();
@@ -24,8 +26,8 @@ public class JavaQuestionService implements QuestionService {
     }
 
     @Override
-    public Collection<Question> getAll() {
-        return Collections.unmodifiableSet(questions);
+    public Set<Question> getAll() {
+        return new HashSet<>(questions);
     }
 
     @Override
@@ -34,7 +36,6 @@ public class JavaQuestionService implements QuestionService {
             return null;
         }
         int index = random.nextInt(questions.size());
-// Преобразуем в список только для доступа по индексу, это ок для небольшого набора вопросов
         return new ArrayList<>(questions).get(index);
     }
 }
