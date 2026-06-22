@@ -4,11 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pro.skyjava.course2.examinerservice.domain.Question;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
@@ -20,20 +16,29 @@ public class ExaminerServiceImpl implements ExaminerService {
 
     @Override
     public List<Question> getQuestions(int amount) {
-        if (amount <= 0) {
-            return List.of();
+        if (amount <= 0) return List.of();
+
+        List<Question> all = new ArrayList<>(questionService.getAll());
+
+        if (amount > all.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Запрошено больше вопросов, чем доступно");
         }
 
-        List<Question> allQuestions = new ArrayList<>(questionService.getAll());
-        if (amount > allQuestions.size()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Запрошено больше вопросов, чем доступно");
+        if (amount == all.size()) {
+            return new ArrayList<>(all);
         }
-        Set<Question> result = new HashSet<>();
-        while (result.size() < amount) {
-            Question random = questionService.getRandomQuestion();
-            if (random != null) { result.add(random);
-            }
-        } return new ArrayList<>(result);
+
+        List<Question> result = new ArrayList<>();
+        List<Question> copyQuestions = new ArrayList<>(all);
+
+        Random rand = new Random();
+
+        for (int i = 0; i < amount; i++) {
+            int indx = rand.nextInt(copyQuestions.size());
+            result.add(copyQuestions.get(indx));
+            copyQuestions.remove(indx);
+        }
+
+        return result;
     }
 }

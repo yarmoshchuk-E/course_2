@@ -12,6 +12,7 @@ import java.util.Collection;
 
 public class JavaQuestionController {
     private final QuestionService questionService;
+
     public JavaQuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
@@ -30,8 +31,8 @@ public class JavaQuestionController {
         return questionService.remove(new Question(question, answer));
     }
 
-    @ GetMapping ("/java/")
-    public Collection<Question> getAllQuestions() { return questionService.getAll();
+    @GetMapping("/java/")
+    public Collection<Question> getAllQuestions() {
+        return questionService.getAll();
     }
 }
-
